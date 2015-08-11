@@ -1,0 +1,44 @@
+//Zeit seit letztem Reboot ermitteln
+
+try {
+	System.Diagnostics.PerformanceCounter pc = new System.Diagnostics.PerformanceCounter("System", "System Up Time");
+	pc.NextValue();
+
+	TimeSpan ts = TimeSpan.FromSeconds(pc.NextValue());
+	
+	string output;
+	
+		var sb = new System.Text.StringBuilder();
+
+		if (ts.Days > 0)
+			sb.AppendFormat("{0} Tag{1} ", ts.Days, ts.Days > 1 ? "e" : String.Empty);
+		if (ts.Hours > 0)
+			sb.AppendFormat("{0} Stunde{1} ", ts.Hours, ts.Hours > 1 ? "n" : String.Empty);
+		if (ts.Minutes > 0)
+			sb.AppendFormat("{0} Minute{1} ", ts.Minutes, ts.Minutes > 1 ? "n" : String.Empty);
+
+		output = sb.ToString();
+		//Base.Environment.ShowInfo("Uptime: " + output);
+		
+		if (ts.Hours > 4){
+			Base.Environment.ShowInfo(" Ein Neustart des Rechners wird dringend empfohlen! \n Rechner Laufzeit: " + output);		
+			
+			if (e is System.ComponentModel.CancelEventArgs)
+			{
+				((System.ComponentModel.CancelEventArgs) e ).Cancel = false;
+				return;
+			}
+		}
+		else {
+			Base.Environment.ShowInfo("Rechner Laufzeit: " + output);
+			
+			if (e is System.ComponentModel.CancelEventArgs)
+			{
+				((System.ComponentModel.CancelEventArgs) e ).Cancel = true;
+				return;
+			}
+		}
+	}	
+	catch (Exception ex) { 
+		Base.Environment.ShowException(ex); 
+}
